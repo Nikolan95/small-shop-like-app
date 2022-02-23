@@ -39,8 +39,6 @@
             @yield('content')
             <!-- end page content -->
         </div>
-        <!-- end page-wrapper -->
-        @include('layouts.modals')
     </body>
 
      <!-- jQuery  -->
