@@ -12,20 +12,17 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
-    // new doctor/user register view
     public function register(){
 
         return view('auth.register');
 
     }
-    // login doctor/user view
     public function login(){
 
         return view('auth.login');
 
     }
-    // login doctor function
-    public function loginDoctor(Request $request)
+    public function loginUser(Request $request)
     {
         $request->validate([
             'username' => 'required|min:4|max:100',
@@ -39,7 +36,6 @@ class UserController extends Controller
 
         return back()->with('error', 'Wrong username or password');
     }
-    //logout doctor function
     public function logout()
     {
         Auth::logout();

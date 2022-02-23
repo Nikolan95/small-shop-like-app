@@ -28,7 +28,7 @@
                             <div class="px-3">
                                 <div class="text-center auth-logo-text">
                                 </div> <!--end auth-logo-text-->
-                                <form class="form-horizontal auth-form my-4" action="{{ route('doctor.login') }}" method="POST">
+                                <form class="form-horizontal auth-form my-4" action="{{ route('user.login') }}" method="POST">
                                 @csrf
                                 <div class="form-group">
                                     <label for="username">Username</label>

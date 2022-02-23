@@ -8,6 +8,6 @@ Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::get('/register', [UserController::class, 'register']);
 
 Route::post('/registerpage', [UserController::class, 'store'])->name('user.store');
-Route::post('/loginpage', [UserController::class, 'loginDoctor'])->name('doctor.login');
+Route::post('/loginpage', [UserController::class, 'loginUser'])->name('user.login');
 Route::get('/logout', [UserController::class, 'logout'])->name('logout');
 

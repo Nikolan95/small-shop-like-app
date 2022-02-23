@@ -1,4 +1,4 @@
-<!--Modal create new patient-->
+
 <div class="modal fade createproductadmin" id="createproductadmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role = "document">
         <div class="modal-content">
@@ -77,8 +77,6 @@
         </div>
     </div>
 </div>
-<!-- endmodal -->
-<!--Modal edit patient-->
 <div class="modal fade editproductadmin" id="editproductadmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role = "document">
         <div class="modal-content">
@@ -158,8 +156,6 @@
         </div>
     </div>
 </div>
-<!-- endmodal -->
-<!--Modal delete product-->
 <div class="modal fade deleteproductadmin" id="deleteproductadmin" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role = "document">
         <div class="modal-content">
@@ -184,4 +180,3 @@
         </div>
     </div>
 </div>
-<!-- endmodal -->
