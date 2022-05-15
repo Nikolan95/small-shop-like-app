@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8" />
-        <title>Ambulance</title>
+        <title>Laravel shop</title>
         <!-- App favicon -->
         <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}">
         <!-- App css -->
