@@ -4,23 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\HasRecursiveRelationships;
 
 class Category extends Model
 {
     use HasFactory;
+    use HasRecursiveRelationships;
 
-    protected $table = "categories";
-    protected $fillable = [
-        'id',
-        'user_id',
-        'subcategory_id',
-        'name',
-        'description',
-        'price'
-    ];
-    protected $primaryKey = 'id';
-
-    public function subCategories(){
-        return $this->hasMany('App\Models\SubCategory');
+    public function parent() {
+        return $this->belongsTo(Category::class, 'parent_id');
     }
+
+//    public function childs() {
+//        return $this->hasMany(Category::class, 'parent_id');
+//    }
+
+    public function products() {
+        return $this->hasManyOfDescendantsAndSelf(Product::class);
+    }
+
 }

@@ -2,186 +2,131 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use App\Models\User;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Support\Collection;
+use Illuminate\Http\JsonResponse;
 use App\Models\Product;
 use App\Models\Category;
-use App\Models\SubCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    public function allProducts($category)
+
+    public function products()
     {
-        if($category == 'all') {
-            $products = Product::with('subCategory')->with('subCategory.category')->with('user')->get();
+        $categories = Category::tree()->get()->toTree();
+        $products = Product::where('approve', 'Approved')->paginate(8);
 
-            $categories = Category::all();
-
-            $subCategories = SubCategory::with('category')->get();
-
-            return view('products.index')->with('products', $products)->with('categories', $categories)->with('subCategories', $subCategories);
-        }
-        elseif ($category = Category::where('name', $category)->first()){
-
-            $products = Product::whereHas('subCategory' , function ($query) use($category) {
-                return $query->where('category_id', '=', $category->id);
-            })->with('subCategory')->with('subCategory.category')->with('user')->get();
-
-            $categories = Category::all();
-
-            $subCategories = SubCategory::where('category_id', $category->id)->with('category')->get();
-
-            return view('products.categories')->with('products', $products)->with('category', $category)->with('categories', $categories)->with('subCategories', $subCategories);
-        }
-    }
-
-
-    public function subcategoryProducts($category, $subcategory)
-    {
-        if($category = Category::where('name', $category)->first()){
-            if($subcategory = SubCategory::where('name', $subcategory)->where('category_id', $category->id)->first()){
-                $products = Product::where('subcategory_id', $subcategory->id)->with('user')->get();
-
-                $categories = Category::all();
-
-                $subCategories = SubCategory::where('category_id', $category->id)->with('category')->get();
-
-                return view('products.subcategories')->with('products', $products)->with('category', $category)->with('subcategory', $subcategory)->with('categories', $categories)->with('subCategories', $subCategories);
-            }
-        }
-    }
-
-    public function productsByUser($user)
-    {
-        if($user = User::where('username', $user)->first()){
-
-            $products = Product::where('user_id', $user->id)->with('subCategory')->with('subCategory.category')->with('user')->get();
-
-            $categories = Category::all();
-
-            $subCategories = SubCategory::with('category')->get();
-
-            return view('products.user')->with('products', $products)->with('categories', $categories)->with('subCategories', $subCategories)->with('user', $user);
-        }
-    }
-
-    public function search(Request $request)
-    {
-        if(isset($_GET['query'])){
-            $searchText = $_GET['query'];
-
-            $products = Product::where('name', 'LIKE', '%'. $searchText . '%')->orWhere('description', 'LIKE', '%'. $searchText . '%')->with('subCategory')->with('subCategory.category')->get();
-
-            $categories = Category::all();
-
-            $subCategories = SubCategory::with('category')->get();
-
-            return view('products.index')->with('products', $products)->with('categories', $categories)->with('subCategories', $subCategories);
-        }
-    }
-
-    public function productdetail($category, $subcategory, $product)
-    {
-        $product = Product::with('subCategory')->with('subCategory.category')->with('user')->where('name', $product)->firstorfail();
-
-        $relatedProducts = Product::with('subCategory')->with('subCategory.category')->where('subcategory_id', $product->subCategory->id)->where('id', '!=', $product->id)->limit(3)->get();
-
-        return view('products.detail')->with('product', $product)->with('relatedProducts', $relatedProducts);
-    }
-
-    // app dashboard
-    public function index()
-    {
-        $user = Auth::user();
-
-        $categories = Category::get();
-
-        $subcategories = SubCategory::get();
-
-        $products = Product::with('subCategory')->with('subCategory.category')->where('user_id', '=', auth()->user()->id)->get();
-
-        return view('dashboard')
-            ->with('user', $user)
-            ->with('products', $products)
-            ->with('categories', $categories)
-            ->with('subcategories', $subcategories);
-    }
-
-
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(),[
-            'category' => 'required',
-            'subcategory' => 'required',
-            'name' => 'required|min:2|max:100',
-            'description' => 'required|min:2|max:255',
-            'price' => 'required'
+        return view('products.index', [
+            'categories' => $categories,
+            'products' => $products
         ]);
-        if(!$validator->passes()){
-            return response()->json(['status'=>0, 'error'=>$validator->errors()->toArray()]);
-        }else{
-            $values = [
-                'user_id' => Auth::id(),
-                'subcategory_id' => $request->subcategory,
-                'name' => $request->name,
-                'description' => $request->description,
-                'price' => $request->price
-            ];
-
-            $query = DB::table('products')->insert($values);
-            $queryId = DB::getPdo()->lastInsertId();
-            if($query){
-                $variable = Product::with('subCategory')->with('subCategory.category')->where('id', $queryId)->get();
-                return response()->json($variable);
-            }
-        }
     }
 
+    public function store(StoreProductRequest $request)
+    {
+        if($request->validator->fails()){
+            return response()->json(['status' => 0, 'error' => $request->validator->errors()->toArray()]);
+        }
+
+        $product = Product::create([
+            'category_id'   =>  (int)$request->category[max(array_keys($request->category))],
+            'title'         =>  $request->title,
+            'description'   =>  $request->description,
+            'price'         =>  $request->price,
+            'phone'         =>  $request->phone,
+            'location'      =>  $request->location,
+            'status'        =>  $request->status
+        ]);
+
+        return new ProductResource($product);
+    }
+
+    public function product($id)
+    {
+        $product = Product::with('category')->findOrFail($id);
+        $categories = $product->category->ancestorsAndSelf()->breadthFirst()->get();
+        $relatedProducts = Product::where('category_id', $product->category_id)->limit(3)->get();
+
+        return view('products.detail', [
+            'product' => $product,
+            'categories' => $categories,
+            'relatedProducts' => $relatedProducts
+        ]);
+    }
 
     public function edit($id)
     {
-        $product = Product::with('subCategory')->with('subCategory.category')->where('id', $id)->firstorfail();
+        $product = Product::findOrFail($id);
 
-        return response()->json($product);
+        return new ProductResource($product);
     }
 
-
-    public function update(Request $request)
+    public function update(UpdateProductRequest $request)
     {
-        $validator = Validator::make($request->all(),[
-            'category' => 'required',
-            'subcategory' => 'required',
-            'name' => 'required|min:2|max:100',
-            'description' => 'required|min:2|max:255',
-            'price' => 'required'
-        ]);
-
-        if(!$validator->passes()){
-            return response()->json(['status'=>0, 'error'=>$validator->errors()->toArray()]);
-        }else {
-            $values = [
-                'id' => $request->id,
-                'user_id' => Auth::id(),
-                'subcategory_id' => $request->subcategory,
-                'name' => $request->name,
-                'description' => $request->description,
-                'price' => $request->price
-            ];
-
-            $query = DB::table('products')->where('id', $request->id)->update($values);
-            if($query){
-                $variable = Product::with('subCategory')->with('subCategory.category')->where('id', $request->id)->get();
-                return response()->json($variable);
-            }
+        if($request->validator->fails()){
+            return response()->json(['status' => 0, 'error' => $request->validator->errors()->toArray()]);
         }
+        $product = Product::findOrFail($request->productId);
+        $product->update($request->validated());
+        $product->save();
+
+        return new ProductResource($product);
+
     }
+
     public function destroy($id)
     {
         $product = Product::findorfail($id);
         $product->delete();
-        return response()->json(['success'=>'Product has been deleted']);
+        return response()->json(['success' => 'Product has been deleted']);
+    }
+
+    public function search(Request $request)
+    {
+        if (isset($_GET['query'])) {
+            $searchText = $_GET['query'];
+
+            $products = Product::where('approve', 'Approved')->where('title', 'LIKE', '%' . $searchText . '%')->orWhere('description', 'LIKE', '%' . $searchText . '%')->paginate(8);
+
+            $categories = Category::tree()->get()->toTree();
+
+            return view('products.index')->with('products', $products)->with('categories', $categories);
+        }
+    }
+
+    public function userProducts($username)
+    {
+        $user = User::where('username', $username)->firstOrFail();
+        $products = Product::where('user_id', $user->id)->paginate(8);
+        $categories = Category::tree()->get()->toTree();
+
+        return view('products.index')->with('products', $products)->with('categories', $categories)->with('username', $username);
+    }
+
+    public function category($category)
+    {
+        $category = Category::where('name', $category)->with('products', function ($query){
+            return $query->where('approve', 'Approved');
+        })->firstOrFail();
+        $products = (new Collection($category->products))->paginate(8);
+
+
+        return view('products.filter', [
+           'subcategories' => $category->children,
+           'products' => $products,
+            'currentFilter' => $category,
+            'categories' => $category->ancestorsAndSelf()->breadthFirst()->get()
+        ]);
+    }
+
+    public function categories($id)
+    {
+        $categories = Category::where('parent_id', $id)->get();
+
+        return new JsonResponse($categories);
     }
 }

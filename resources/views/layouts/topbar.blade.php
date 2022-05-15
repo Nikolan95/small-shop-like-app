@@ -55,12 +55,14 @@ $('document').ready(function () {
                     <i data-feather="menu" class="align-self-center"></i>
                 </button>
             </li>
+            @if(!Auth::user()->is_admin)
             <li class="hide-phone app-search">
                 <form  action="{{route('product.search')}}" method="GET">
                     <input type="text" id="" name="query" placeholder="Search..." class="form-control">
                     <button style="display: none" type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </li>
+            @endif
         </ul>
     </nav>
     <!-- end navbar-->

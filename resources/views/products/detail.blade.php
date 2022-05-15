@@ -12,9 +12,12 @@
                         <div class="page-title-box">
                             <div class="float-right">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item"><a href="/products/{{$product->subcategory->category->name}}">{{ $product->subcategory->category->name }}</a></li>
-                                    <li class="breadcrumb-item"><a href="/products/{{$product->subcategory->category->name}}/{{$product->subcategory->name}}">{{ $product->subcategory->name }}</a></li>
-                                    <li class="breadcrumb-item active">{{ $product->name }}</li>
+                                    @foreach($categories as $category)
+                                        <li class="breadcrumb-item"><a href="/products/{{$category->name}}">{{ $category->name }}</a></li>
+                                    @endforeach
+{{--                                    <li class="breadcrumb-item"><a href="/products/{{$product->subcategory->category->name}}">{{ $product->subcategory->category->name }}</a></li>--}}
+{{--                                    <li class="breadcrumb-item"><a href="/products/{{$product->subcategory->category->name}}/{{$product->subcategory->name}}">{{ $product->subcategory->name }}</a></li>--}}
+                                    <li class="breadcrumb-item active">{{ $product->title }}</li>
                                 </ol>
                             </div>
                             <h4 class="page-title">Procuct-Detail</h4>
@@ -32,9 +35,9 @@
                                     </div><!--end col-->
                                     <div class="col-lg-6 align-self-center">
                                         <div class="single-pro-detail">
-                                            <p class="mb-1">{{$product->subcategory->name}}</p>
+                                            <p class="mb-1">{{$product->category->name}}</p>
                                             <div class="custom-border mb-3"></div>
-                                            <h3 class="pro-title">{{$product->name}}</h3>
+                                            <h3 class="pro-title">{{$product->title}}</h3>
                                             <p class="text-muted mb-0">{{$product->description}}</p>
                                             <h2 class="pro-price">${{$product->price}} </h2>
                                             <a href="/{{$product->user->username}}/products" class="text-muted font-13">From user: {{ $product->user->username }}</a>
@@ -125,11 +128,11 @@
                                         <img src="{{asset('images/products/img-1.png')}}" alt="" class="img-fluid">
                                     </a>
                                     <div class="card-body product-info">
-                                        <a href="" class="product-title">{{ $product->name }}</a>
+                                        <a href="" class="product-title">{{ $product->title }}</a>
                                         <div class="d-flex justify-content-between my-2">
                                             <p class="product-price">${{ $product->price }}</p>
                                         </div>
-                                        <a href="/products/{{ $product->subcategory->category->name }}/{{ $product->subcategory->name }}/{{ $product->name }}" class="btn btn-gradient-primary btn-round px-3 btn-sm waves-effect waves-light" style="padding-top: 7px;"> View this product</a>
+                                        <a href="/product-detail/{{ $product->id }}" class="btn btn-gradient-primary btn-round px-3 btn-sm waves-effect waves-light" style="padding-top: 7px;"> View this product</a>
                                     </div><!--end card-body-->
                                 </div><!--end card-->
                             </div><!--end col-->

@@ -11,46 +11,36 @@
                 <div class="modal-body">
                     <div class="card">
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="firstname">Category</label>
-                                        <select class="form-control" name="category" id="category1" onchange="getComboA(this)">
-                                            @foreach($categories as $category)
-                                                <option value="{{ $category->id }}"> {{ $category->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger error-text category_error"></span>
+                            <div class="selects">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="firstname">Category</label>
+                                            <select class="form-control" name="category[0]" data-id="1" onchange="getComboA(this)">
+                                                <option></option>
+                                                @foreach($categories as $category)
+                                                    <option value="{{ $category->id }}"> {{ $category->name }} </option>
+                                                @endforeach
+                                            </select>
+                                            <span class="text-danger error-text category.0_error"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="lastname">Subcategory</label>
-                                        <select class="form-control" name="subcategory" id="subcategory1">
-                                            @foreach($subcategories as $subcategory)
-                                                <option value="{{ $subcategory->id }}"> {{ $subcategory->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger error-text subcategory_error"></span>
+                                        <label for="title">title</label>
+                                        <input type="text" class="form-control" name="title">
+                                        <span class="text-danger error-text title_error"></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="jmbg">name</label>
-                                        <input type="text" class="form-control" name="name" id="name1">
-                                        <span class="text-danger error-text name_error"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="note">description</label>
-                                        <textarea class="form-control" rows="5" name="description" id="description1"></textarea>
+                                        <label for="description">description</label>
+                                        <textarea class="form-control" rows="5" name="description" ></textarea>
                                         <span class="text-danger error-text description_error"></span>
                                     </div>
                                 </div>
@@ -58,9 +48,39 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="note">price</label>
-                                        <input type="number" class="form-control" name="price" id="price1">
+                                        <label for="price">price</label>
+                                        <input type="number" class="form-control" name="price" >
                                         <span class="text-danger error-text price_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="phone">phone</label>
+                                        <input type="number" class="form-control" name="phone" >
+                                        <span class="text-danger error-text phone_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="location">location</label>
+                                        <input type="text" class="form-control" name="location" >
+                                        <span class="text-danger error-text location_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="status">Product status</label>
+                                        <select class="form-control" name="status"  data-id="1">
+                                            <option value="New">New </option>
+                                            <option value="Used">Used</option>
+                                        </select>
+                                        <span class="text-danger error-text status_error"></span>
                                     </div>
                                 </div>
                             </div>
@@ -76,6 +96,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade editproduct" id="editproduct" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role = "document">
         <div class="modal-content">
@@ -84,7 +105,8 @@
                 <div class="modal-title">
                 </div>
             </div>
-            <form action="{{ route('product.update') }}" method="PUT"  id="updateproductform">
+            <form action="{{ route('product.update') }}" method="post" id="updateproductform">
+                @method('PUT')
                 @csrf
                 <div class="modal-body">
                     <div class="card">
@@ -92,35 +114,10 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <label for="firstname">Categoies</label>
-                                        <input type="hidden" id="productid" name="productid" />
-                                        <select class="form-control" name="category" id="category">
-                                            @foreach($categories as $category)
-                                                <option value="{{ $category->id }}"> {{ $category->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger error-text category_error"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <select class="form-control" name="subcategory" id="subcategory">
-                                            @foreach($subcategories as $subcategory)
-                                                <option value="{{ $subcategory->id }}"> {{ $subcategory->name }} </option>
-                                            @endforeach
-                                        </select>
-                                        <span class="text-danger error-text subcategory_error"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label for="name">name</label>
-                                        <input type="text" class="form-control" name="name" id="name" >
-                                        <span class="text-danger error-text name_error"></span>
+                                        <label for="title">title</label>
+                                        <input type="hidden" class="form-control" name="productId" id="productId">
+                                        <input type="text" class="form-control" name="title" id="title">
+                                        <span class="text-danger error-text title_error"></span>
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +125,7 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="description">description</label>
-                                        <textarea class="form-control" rows="5" name="description" id="description" ></textarea>
+                                        <textarea class="form-control" rows="5" name="description" id="description"></textarea>
                                         <span class="text-danger error-text description_error"></span>
                                     </div>
                                 </div>
@@ -137,8 +134,38 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="price">price</label>
-                                        <input type="text" class="form-control" name="price" id="price">
+                                        <input type="number" class="form-control" name="price" id="price">
                                         <span class="text-danger error-text price_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="phone">phone</label>
+                                        <input type="number" class="form-control" name="phone" id="phone">
+                                        <span class="text-danger error-text phone_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="location">location</label>
+                                        <input type="text" class="form-control" name="location" id="location">
+                                        <span class="text-danger error-text location_error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="status">Product status</label>
+                                        <select class="form-control" name="status" id="status" data-id="1">
+                                            <option value="New">New </option>
+                                            <option value="Used">Used</option>
+                                        </select>
+                                        <span class="text-danger error-text status_error"></span>
                                     </div>
                                 </div>
                             </div>
@@ -154,6 +181,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade deleteproduct" id="deleteproduct" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role = "document">
         <div class="modal-content">
@@ -162,7 +190,8 @@
                 <div class="modal-title">
                 </div>
             </div>
-            <form action="/productdelete" method="DELETE" id="deleteproductform">
+            <form action="/productdelete" method="post" id="deleteproductform">
+                @method('delete')
                 @csrf
                 <input type="hidden" id="deleteproductId" value>
                 <div class="modal-body">

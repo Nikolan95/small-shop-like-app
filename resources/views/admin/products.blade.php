@@ -1,6 +1,5 @@
 @extends('layouts.layout')
 @section('content')
-
     <div class="page-wrapper">
 
         <!-- Page Content-->
@@ -13,11 +12,10 @@
                         <div class="page-title-box">
                             <div class="float-right">
                                 <ol class="breadcrumb">
-                                    <li class="breadcrumb-item active">Admin panel</li>
+                                    <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div>
-                            <h4 class="page-title">All products</h4><br>
-                            <button class="btn btn-primary btn-sm add-file ml-3" data-toggle = "modal" data-target ="#createproductadmin">add new product for sale</button>
+                            <h4 class="page-title">@if($status == 'approved') All active products @elseif($status == 'in process') New products request @elseif($status == 'denied') Denied products @endif</h4><br>
                         </div><!--end page-title-box-->
                     </div><!--end col-->
                 </div>
@@ -26,15 +24,11 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="mt-0 header-title">All products</h4>
-                                <p class="text-muted mb-4 font-13">
-                                    All active products
-                                </p>
+                                <h4 class="mt-0 header-title">@if($status == 'approved') All active products @elseif($status == 'in process') New products request @elseif($status == 'denied') Denied products @endif</h4>
                                 <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                                     <thead>
                                     <tr>
                                         <th>Product Name</th>
-                                        <th>Published By</th>
                                         <th>Category</th>
                                         <th>Subcategory</th>
                                         <th>Price</th>
@@ -45,19 +39,23 @@
                                     @foreach($products as $product)
                                         <tr id="row{{ $product->id }}">
                                             <td>
-                                                {{ $product->name }}
-
+                                                {{ $product->title }}
                                             </td>
-                                            <td>
-                                                {{ $product->user->username }}
-
-                                            </td>
-                                            <td>{{ $product->subcategory->category->name  }}</td>
-                                            <td>{{ $product->subcategory->name  }}</td>
+                                            <td>@if($product->category->rootAncestor){{ $product->category->rootAncestor->name  }}@else {{ $product->category->name }} @endif</td>
+                                            <td>@if($product->category->parent){{ $product->category->name }}@else no subcategory @endif</td>
                                             <td>${{$product->price}}</td>
                                             <td>
-                                                <a href="javascript:void(0)" onclick="editProductAdmin({{$product->id}})"><i class="far fa-edit text-info mr-1"></i></a>
-                                                <a class="deleteproductadmin" data-toggle = "modal" data-target ="#deleteproductadmin" data-id ="{{ $product->id }}" data-name ="{{ $product->name }}"><i class="far fa-trash-alt text-danger"></i></a>
+                                                @if($status == 'approved')
+                                                    <a href="javascript:void(0)"><i class="fa fa-check" style="opacity: 0.2;"></i></a>
+                                                @else
+                                                    <a href="javascript:void(0)" onclick="approve({{$product->id}})"><i class="fa fa-check text-info mr-1"></i></a>
+                                                @endif
+                                                @if($status == 'denied')
+                                                    <a href="javascript:void(0)"><i class="fa fa-times" style="opacity: 0.2;"></i></a>
+                                                @else
+                                                    <a href="javascript:void(0)" onclick="deny({{$product->id}})"><i class="fa fa-times text-info mr-1"></i></a>
+                                                @endif
+                                                <a class="deleteadminproduct" data-toggle = "modal" data-target ="#deleteadminproduct" data-id ="{{ $product->id }}" data-name ="{{ $product->title }}"><i class="far fa-trash-alt text-danger"></i></a>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -75,7 +73,7 @@
         </div>
         <!-- end page content -->
     </div>
+    @include('admin.actionmodals.products')
     <!-- end page-wrapper -->
     <!-- end page-wrapper -->
-    @include('admin.adminCrudModal')
 @endsection

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginUserRequest;
+use App\Http\Requests\RegisterUserRequest;
+use App\Models\Category;
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -22,19 +23,16 @@ class UserController extends Controller
         return view('auth.login');
 
     }
-    public function loginUser(Request $request)
+    public function loginUser(LoginUserRequest $request)
     {
-        $request->validate([
-            'username' => 'required|min:4|max:100',
-            'password' => 'required|min:6|',
-         ]);
-
         $credentials = $request->only('username', 'password');
         if (Auth::attempt($credentials)) {
-            return redirect('/dashboard')->with('success', 'login success');
+            if(Auth::user()->is_admin){
+                return redirect()->route('admin.products', 'in process')->with('success', 'login success');
+            }
+            return redirect()->route('products')->with('success', 'login success');
         }
-
-        return back()->with('error', 'Wrong username or password');
+        return back()->with('error', 'Wrong credentials');
     }
     public function logout()
     {
@@ -45,37 +43,33 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  \App\Http\Requests\RegisterUserRequest  $request
      */
-    public function store(Request $request)
+    public function store(RegisterUserRequest $request)
     {
-        $request->validate([
 
-            'username' => 'required|min:4|max:100|unique:users',
-            'firstname' => 'required|min:2|max:100',
-            'lastname' => 'required|min:2|max:100',
-            'email' => 'required|email|min:4|max:100|unique:users',
-            'address' => 'required|min:2|max:100',
-            'city' => 'required|min:2|max:100',
-            'password' => 'required|min:6|required_with:confirm_password|same:confirm_password',
-            'confirm_password' => 'required|min:6',
-         ]);
+        $user = User::create([
+            'firstname' => $request->input('firstname'),
+            'lastname' => $request->input('lastname'),
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'address' => $request->input('address'),
+            'city' => $request->input('city'),
+            'phone' => $request->input('phone'),
+            'password' => Hash::make($request->input('password')),
+        ]);
 
-        $user = new User;
+        Auth::login($user);
+        return redirect('/dashboard');
+    }
+    public function dashboard()
+    {
+        $products = Product::where('user_id', Auth::id())->with('category')->get();
+        $categories = Category::tree()->get()->toTree();
 
-        $user->firstname = $request->firstname;
-        $user->lastname = $request->lastname;
-        $user->username = $request->username;
-        $user->email = $request->email;
-        $user->address = $request->address;
-        $user->city = $request->city;
-        $user->password = Hash::make($request->password);
-
-
-        if($user->save()){
-            Auth::loginUsingId($user->id);
-            return redirect('/dashboard');
-        }
+        return view('products.dashboard', [
+            'products' => $products,
+            'categories' => $categories
+        ]);
     }
 }

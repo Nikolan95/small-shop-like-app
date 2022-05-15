@@ -2,124 +2,98 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateCustomerRequest;
+use App\Http\Requests\UpdateCustomerRequest;
+use App\Http\Resources\UserResource;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\SubCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index($status)
     {
-        $categories = Category::get();
+        $products = Product::where('approve', $status)->with('category')->get();
+        $categories = Category::tree()->get()->toTree();
 
-        $subcategories = SubCategory::get();
-
-        $products = Product::with('subCategory')->with('subCategory.category')->with('user')->get();
-
-        return view('admin.dashboard')
-            ->with('products', $products)
-            ->with('categories', $categories)
-            ->with('subcategories', $subcategories);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(),[
-            'category' => 'required',
-            'subcategory' => 'required',
-            'name' => 'required|min:2|max:100',
-            'description' => 'required|min:2|max:255',
-            'price' => 'required'
+        return view('admin.products', [
+            'products' => $products,
+            'categories' => $categories,
+            'status' => $status
         ]);
-        if(!$validator->passes()){
-            return response()->json(['status'=>0, 'error'=>$validator->errors()->toArray()]);
-        }else{
-            $values = [
-                'user_id' => Auth::id(),
-                'subcategory_id' => $request->subcategory,
-                'name' => $request->name,
-                'description' => $request->description,
-                'price' => $request->price
-            ];
+    }
 
-            $query = DB::table('products')->insert($values);
-            $queryId = DB::getPdo()->lastInsertId();
-            if($query){
-                $variable = Product::with('subCategory')->with('subCategory.category')->with('user')->where('id', $queryId)->get();
-                return response()->json($variable);
-            }
+    public function approve(Request $request)
+    {
+        $product = Product::where('id', $request->input('id'))->firstOrFail();
+        $product->approve = 'Approved';
+        $product->update();
+        return redirect()->back()->with('approved', 'approved');
+    }
+
+    public function deny(Request $request)
+    {
+        $product = Product::where('id', $request->input('id'))->firstOrFail();
+        $product->approve = 'Denied';
+        $product->update();
+        return redirect()->back()->with('denied', 'denied');
+    }
+
+    public function customers()
+    {
+        $users = User::where('is_admin', false)->get();
+
+        return view('admin.customers', [
+            'users' => $users
+        ]);
+    }
+
+    public function customerCreate(CreateCustomerRequest $request)
+    {
+        if($request->validator->fails()){
+            return response()->json(['status' => 0, 'error' => $request->validator->errors()->toArray()]);
         }
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-
-    public function edit($id)
-    {
-        $product = Product::with('subCategory')->with('subCategory.category')->with('user')->where('id', $id)->firstorfail();
-
-        return response()->json($product);
-    }
-
-
-    public function update(Request $request)
-    {
-        $validator = Validator::make($request->all(),[
-            'category' => 'required',
-            'subcategory' => 'required',
-            'name' => 'required|min:2|max:100',
-            'description' => 'required|min:2|max:255',
-            'price' => 'required'
+        $user = User::create([
+            'firstname' => $request->input('firstname'),
+            'lastname' => $request->input('lastname'),
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'address' => $request->input('address'),
+            'city' => $request->input('city'),
+            'phone' => $request->input('phone'),
+            'password' => Hash::make($request->input('password')),
         ]);
 
-        if(!$validator->passes()){
-            return response()->json(['status'=>0, 'error'=>$validator->errors()->toArray()]);
-        }else {
-            $values = [
-                'id' => $request->id,
-                'user_id' => $request->userid,
-                'subcategory_id' => $request->subcategory,
-                'name' => $request->name,
-                'description' => $request->description,
-                'price' => $request->price
-            ];
-
-            $query = DB::table('products')->where('id', $request->id)->update($values);
-            if($query){
-                $variable = Product::with('subCategory')->with('subCategory.category')->with('user')->where('id', $request->id)->get();
-                return response()->json($variable);
-            }
-        }
+        return new UserResource($user);
     }
 
-
-    public function destroy($id)
+    public function customerEdit($id)
     {
-        $product = Product::findorfail($id);
-        $product->delete();
-        return response()->json(['success'=>'Product has been deleted']);
+        $user = User::findOrFail($id);
+        return new UserResource($user);
+    }
+
+    public function customerUpdate(UpdateCustomerRequest $request)
+    {
+        if($request->validator->fails()){
+            return response()->json(['status' => 0, 'error' => $request->validator->errors()->toArray()]);
+        }
+        $user = User::findOrFail($request->input('userId'));
+        $user->update($request->validated());
+        $user->save();
+        return new UserResource($user);
+    }
+
+    public function customerDelete($id)
+    {
+        $user = User::findorfail($id);
+        $user->delete();
+        return response()->json(['success' => 'User has been deleted']);
     }
 }

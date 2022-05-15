@@ -13,7 +13,6 @@ class User extends Authenticatable
 
     protected $table = "users";
     protected $fillable = [
-        'id',
         'is_admin',
         'firstname',
         'lastname',
@@ -21,7 +20,7 @@ class User extends Authenticatable
         'email',
         'address',
         'city',
-        'confirm_password',
+        'password',
     ];
     protected $primaryKey = 'id';
 
@@ -36,6 +35,6 @@ class User extends Authenticatable
     ];
 
     public function Products(){
-        return $this->hasMany('App\Models\Product');
+        return $this->hasMany(Product::class);
     }
 }
