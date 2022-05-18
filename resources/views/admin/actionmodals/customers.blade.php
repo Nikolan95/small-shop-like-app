@@ -85,7 +85,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 text-right">
-                                    <button class="btn btn-primary btn-sm add-file ml-3" type="submit">List new item for sale</button>
+                                    <button class="btn btn-primary btn-sm add-file ml-3" type="submit">Create Customer</button>
                                 </div>
                             </div>
                         </div><!--end card-body-->
@@ -168,7 +168,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 text-right">
-                                    <button class="btn btn-primary btn-sm add-file ml-3" type="submit">List new item for sale</button>
+                                    <button class="btn btn-primary btn-sm add-file ml-3" type="submit">Update Customer</button>
                                 </div>
                             </div>
                         </div><!--end card-body-->
@@ -196,7 +196,7 @@
                 <div class="modal-footer">
                     <div class="row">
                         <div class="col-sm-12 text-right">
-                            <button class="btn btn-primary btn-sm add-file ml-3" type="submit">Delete product</button>
+                            <button class="btn btn-primary btn-sm add-file ml-3" type="submit">Delete Customer</button>
                         </div>
                     </div>
                 </div>
