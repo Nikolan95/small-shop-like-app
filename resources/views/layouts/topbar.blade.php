@@ -28,10 +28,12 @@ $('document').ready(function () {
     <!-- Navbar -->
     <nav class="navbar-custom">
         <ul class="list-unstyled topbar-nav float-right mb-0">
-            <li class="dropdown">
+            @if(Auth::user())
+            <a class="dropdown">
                 <div class="nav-link dropdown-toggle waves-effect waves-light nav-user">
 
                 </div>
+
                 <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
                     aria-haspopup="false" aria-expanded="false">
 
@@ -40,7 +42,12 @@ $('document').ready(function () {
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="/logout"><i class="dripicons-exit text-muted mr-2"></i>Logout</a>
                 </div>
-            </li>
+
+            </a>
+            @else
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            @endif
         </ul><!--end topbar-nav-->
         <ul class="list-unstyled topbar-nav mb-0">
             <li>
@@ -55,6 +62,7 @@ $('document').ready(function () {
                     <i data-feather="menu" class="align-self-center"></i>
                 </button>
             </li>
+            @if(Auth::user())
             @if(!Auth::user()->is_admin)
             <li class="hide-phone app-search">
                 <form  action="{{route('product.search')}}" method="GET">
@@ -62,6 +70,7 @@ $('document').ready(function () {
                     <button style="display: none" type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </li>
+            @endif
             @endif
         </ul>
     </nav>

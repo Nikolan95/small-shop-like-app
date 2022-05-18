@@ -1,7 +1,8 @@
+@if(Auth::user())
 <div class="leftbar-tab-menu">
     <div class="main-icon-menu">
         <nav class="nav">
-            @if(Auth::user())
+
             @if(!Auth::user()->is_admin)
             <a href="/dashboard"  data-toggle="tooltip-custom" data-placement="right"  data-trigger="hover" title="" data-original-title="Dashboard">
                 <a href="/dashboard"><i data-feather="monitor" class="align-self-center menu-icon icon-dual" href = "/dashboard"></i></a>
@@ -20,7 +21,6 @@
                 <a href="#administerCustomers" class="nav-link" data-toggle="tooltip-custom" data-placement="right"  data-trigger="hover" title="" data-original-title="Customers">
                     <i data-feather="user" class="align-self-center menu-icon icon-dual"></i>
                 </a><!--end administerProducts-->
-            @endif
             @endif
         </nav><!--end nav-->
         <div class="pro-metrica-end">
@@ -71,3 +71,4 @@
     </div><!-- end main-menu-inner-->
 </div>
 <!-- end leftbar-tab-menu-->
+@endif

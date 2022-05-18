@@ -25,14 +25,8 @@ Route::group(['middleware' => 'auth'], function () {
 
     require __DIR__.'/admin.php';
 
-    //product detail page
-    Route::get('/product-detail/{id}', [ProductController::class, 'product']);
-
     //filtering by category
     Route::get('/products/{category}', [ProductController::class, 'category']);
-
-    //all products page for browsing
-    Route::get('/products', [ProductController::class, 'products'])->name('products');
 
     //all users products
     Route::get('/{user}/products', [ProductController::class, 'userProducts']);
@@ -59,3 +53,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::delete('/productdelete/{id}', [ProductController::class, 'destroy'])->name('product.delete');
 
 });
+
+//all products page for browsing
+Route::get('/products', [ProductController::class, 'products'])->name('products');
+
+//product detail page
+Route::get('/product-detail/{id}', [ProductController::class, 'product']);
