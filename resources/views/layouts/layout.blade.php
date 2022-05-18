@@ -16,8 +16,12 @@
          <!-- Responsive datatable examples -->
          <link href="{{asset('css/plugins/responsive.bootstrap4.min.css')}}" rel="stylesheet" type="text/css" />
 
+        <link href="{{asset('plugins/treeview/themes/default/style.css')}}" rel="stylesheet">
+
         <!-- Sweet Alert -->
         <link href="{{asset('css/plugins/sweetalert2.min.css')}}" rel="stylesheet" type="text/css">
+
+        <link href="{{asset('plugins/dropify/css/dropify.min.css')}}" rel="stylesheet">
 
         <!-- App css -->
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
@@ -55,11 +59,15 @@
      <script src="{{asset('js/plugins/dataTables.bootstrap4.min.js')}}"></script>
      <script src="{{asset('js/jquery.hospital_dashboard.init.js')}}"></script>
 
-
+    <script src="{{asset('plugins/treeview/jstree.min.js')}}"></script>
+    <script src="{{asset('pages/jquery.treeview.init.js')}}"></script>
 
      <!-- Sweet-Alert  -->
      <script src="{{asset('js/plugins/sweetalert2.min.js')}}"></script>
      <script src="{{asset('js/jquery.sweet-alert.init.js')}}"></script>
+
+    <script src="{{asset('plugins/dropify/js/dropify.min.js')}}"></script>
+    <script src="{{asset('pages/jquery.form-upload.init.js')}}"></script>
 
      <!-- App js -->
      <script src="{{ asset('js/app.js') }}"></script>

@@ -40,7 +40,13 @@
                             <div class="ribbon1 rib1-warning">
                                 <span class="text-white text-center rib1-warning">50% off</span>
                             </div><!--end ribbon-->
-                            <img src="{{asset('images/products/img-7.png')}}" alt="" class="d-block mx-auto my-4" height="170">
+
+                            @if(isset($product->image))
+                                <img src="{{asset($product->image)}}" alt="" class="d-block mx-auto my-4" height="170" width="200">
+                            @else
+                                <img src="{{asset('images/products/img-7.png')}}" alt="" class="d-block mx-auto my-4" height="170">
+                            @endif
+
                             <div class="d-flex justify-content-between align-items-center my-4">
                                 <div>
 {{--                                    <p class="text-muted mb-2">{{ $product->category->name }} > {{ $product->subcategory->name }}</p>--}}

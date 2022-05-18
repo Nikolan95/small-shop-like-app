@@ -74,6 +74,13 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <img id="image" width="350" height="200"></img>
+                                    </div>
+                                </div>
+                            </div>
                             <input type="hidden" id="id" name="id">
                             <div class="row">
                                 <div class="col-sm-12 text-right">
@@ -162,6 +169,13 @@
                                     <div class="form-group">
                                         <label for="status">status</label>
                                         <p id="denystatus"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <img id="denyimage" width="350" height="200"></img>
                                     </div>
                                 </div>
                             </div>

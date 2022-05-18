@@ -25,6 +25,7 @@ class ProductResource extends JsonResource
         $data['phone'] = $this->phone;
         $data['location'] = $this->location;
         $data['status'] = $this->status;
+        $data['image'] = $this->image;
         return $data;
     }
 }

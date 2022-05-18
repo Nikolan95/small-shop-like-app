@@ -6,7 +6,7 @@
                 <div class="modal-title">
                 </div>
             </div>
-            <form action="{{ route('product.create') }}" method="POST" id="createproductform">
+            <form action="{{ route('product.create') }}" method="POST" id="createproductform" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="card">
@@ -83,6 +83,17 @@
                                         <span class="text-danger error-text status_error"></span>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="mt-0 header-title">Image</h4>
+                                            <input type="file" id="input-file-now" name="image" class="dropify" />
+                                            <span class="text-danger error-text image_error"></span>
+                                        </div><!--end card-body-->
+                                    </div><!--end card-->
+                                </div><!--end col-->
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 text-right">

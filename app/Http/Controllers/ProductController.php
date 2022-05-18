@@ -32,14 +32,25 @@ class ProductController extends Controller
             return response()->json(['status' => 0, 'error' => $request->validator->errors()->toArray()]);
         }
 
+        $imagePath = null;
+
+        if ($request->hasFile('image')){
+            $image = $request->file('image');
+            $name = $image->getClientOriginalName();
+            $folder = uniqid() . '-' . now()->timestamp;
+            $image->storeAs('public/images/products/' . $folder, $name);
+            $imagePath = 'storage/images/products/'.$folder.'/'.$name;
+        }
+
         $product = Product::create([
-            'category_id'   =>  (int)$request->category[max(array_keys($request->category))],
-            'title'         =>  $request->title,
-            'description'   =>  $request->description,
-            'price'         =>  $request->price,
-            'phone'         =>  $request->phone,
-            'location'      =>  $request->location,
-            'status'        =>  $request->status
+            'category_id'   =>  (int)$request->input('category')[max(array_keys($request->input('category')))],
+            'title'         =>  $request->input('title'),
+            'description'   =>  $request->input('description'),
+            'price'         =>  $request->input('price'),
+            'phone'         =>  $request->input('phone'),
+            'location'      =>  $request->input('location'),
+            'status'        =>  $request->input('status'),
+            'image'         =>  $imagePath
         ]);
 
         return new ProductResource($product);
@@ -70,7 +81,7 @@ class ProductController extends Controller
         if($request->validator->fails()){
             return response()->json(['status' => 0, 'error' => $request->validator->errors()->toArray()]);
         }
-        $product = Product::findOrFail($request->productId);
+        $product = Product::findOrFail($request->input('productId'));
         $product->update($request->validated());
         $product->save();
 
@@ -85,7 +96,7 @@ class ProductController extends Controller
         return response()->json(['success' => 'Product has been deleted']);
     }
 
-    public function search(Request $request)
+    public function search()
     {
         if (isset($_GET['query'])) {
             $searchText = $_GET['query'];

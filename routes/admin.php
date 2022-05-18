@@ -20,4 +20,10 @@ Route::group(['middleware' => 'is_admin', 'prefix' => 'admin'], function (){
     Route::get('/customers/edit/{id}', [AdminController::class, 'customerEdit']);
     Route::put('/customers/update', [AdminController::class, 'customerUpdate'])->name('admin.update.user');
     Route::delete('/customers/delete/{id}', [AdminController::class, 'customerDelete']);
+
+    //manage categories
+    Route::get('/categories', [AdminController::class, 'categories']);
+    Route::post('/topcategory', [AdminController::class, 'topCategoryCreate'])->name('topcategory.create');
+    Route::post('/subcategory', [AdminController::class, 'subCategoryCreate'])->name('subcategory.create');
+
 });

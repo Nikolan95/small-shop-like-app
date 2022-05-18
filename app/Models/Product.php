@@ -14,9 +14,6 @@ class Product extends Model
     use HasFactory;
     use HasRecursiveRelationships;
     protected $table = "products";
-//    protected $attributes = [
-//        'user_id' => null
-//    ];
     protected $fillable = [
         'category_id',
         'title',
@@ -26,14 +23,10 @@ class Product extends Model
         'status',
         'location',
         'phone',
-        'approve'
+        'approve',
+        'image'
     ];
     protected $primaryKey = 'id';
-
-//    public static function boot() {
-//        parent::boot();
-//        parent::observe(new FooOb);
-//    }
     /**
      * Register any events for your application.
      *
@@ -51,10 +44,5 @@ class Product extends Model
 
     public function category(){
         return $this->belongsTo(Category::class, 'category_id');
-    }
-
-    public function setUserId()
-    {
-        $this->attributes['user_id'] = Auth::id();
     }
 }

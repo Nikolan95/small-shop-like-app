@@ -157,6 +157,12 @@ function approve(id){
         $('#phone').text(application.data.phone);
         $('#location').text(application.data.location);
         $('#status').text(application.data.status);
+        if (application.data.image){
+            $('#image').attr('src', '/'+application.data.image);
+        }
+        else {
+            $('#image').attr('src', '/images/products/img-7.png');
+        }
         $('#approveproduct').modal('toggle');
     })
 }
@@ -173,6 +179,12 @@ function deny(id){
         $('#denyphone').text(application.data.phone);
         $('#denylocation').text(application.data.location);
         $('#denystatus').text(application.data.status);
+        if (application.data.image){
+            $('#denyimage').attr('src', '/'+application.data.image);
+        }
+        else {
+            $('#denyimage').attr('src', '/images/products/img-7.png');
+        }
         $('#denyproduct').modal('toggle');
     })
 }
@@ -421,6 +433,5 @@ function getComboA(elm)
         }
     });
 }
-
 
 

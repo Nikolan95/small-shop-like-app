@@ -36,7 +36,8 @@ class StoreProductRequest extends FormRequest
             'price' => 'required',
             'phone' => 'required',
             'location' => 'required',
-            'status' => 'in:New,Used'
+            'status' => 'in:New,Used',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 }

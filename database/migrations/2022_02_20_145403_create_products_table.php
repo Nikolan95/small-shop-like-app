@@ -23,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->integer('phone');
             $table->string('location');
             $table->enum('status', ['Used', 'New']);
+            $table->string('image')->nullable();
             $table->string('approve')->default('in process');
             $table->timestamps();
 

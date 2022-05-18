@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCustomerRequest;
+use App\Http\Requests\SubCategoryRequest;
+use App\Http\Requests\TopCategoryRequest;
 use App\Http\Requests\UpdateCustomerRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Category;
@@ -12,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
@@ -95,5 +98,31 @@ class AdminController extends Controller
         $user = User::findorfail($id);
         $user->delete();
         return response()->json(['success' => 'User has been deleted']);
+    }
+
+    public function categories()
+    {
+        $categories = Category::tree()->get()->toTree();
+        $allCategories = Category::all();
+
+        return view('admin.categories', [
+           'categories' => $categories,
+            'allCategories' => $allCategories
+        ]);
+    }
+
+    public function topCategoryCreate(TopCategoryRequest $request)
+    {
+        Category::create($request->validated());
+        return Redirect::back()->with('success', 'success');
+    }
+
+    public function subCategoryCreate(SubCategoryRequest $request)
+    {
+        Category::create([
+            'parent_id' => $request->input('category'),
+            'name' => $request->input('newsubcategory')
+        ]);
+        return Redirect::back()->with('success', 'success');
     }
 }

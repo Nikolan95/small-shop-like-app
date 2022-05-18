@@ -11,6 +11,9 @@
             </a><br>
             @endif
             @if(Auth::user()->is_admin)
+                <a href="#administerCategories" class="nav-link" data-toggle="tooltip-custom" data-placement="right"  data-trigger="hover" title="" data-original-title="Categories">
+                    <i data-feather="grid" class="align-self-center menu-icon icon-dual"></i>
+                </a><!--end administerProducts-->
                 <a href="#administerProducts" class="nav-link" data-toggle="tooltip-custom" data-placement="right"  data-trigger="hover" title="" data-original-title="Products">
                     <i data-feather="box" class="align-self-center menu-icon icon-dual"></i>
                 </a><!--end administerProducts-->
@@ -36,6 +39,14 @@
             </a>
         </div>
         <div class="menu-body slimscroll">
+            <div id="administerCategories" class="main-icon-menu-pane">
+                <div class="title-box">
+                    <h6 class="menu-title">Categories</h6>
+                </div>
+                <ul class="nav">
+                    <li class="nav-item"><a class="nav-link" href="/admin/categories">Manage Categories</a></li>
+                </ul>
+            </div><!-- end Pages -->
             <div id="administerProducts" class="main-icon-menu-pane">
                 <div class="title-box">
                     <h6 class="menu-title">Products</h6>
