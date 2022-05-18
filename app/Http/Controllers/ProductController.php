@@ -60,7 +60,7 @@ class ProductController extends Controller
     {
         $product = Product::with('category')->findOrFail($id);
         $categories = $product->category->ancestorsAndSelf()->breadthFirst()->get();
-        $relatedProducts = Product::where('category_id', $product->category_id)->limit(3)->get();
+        $relatedProducts = Product::where('category_id', $product->category_id)->where('id', '!=', $product->id)->limit(3)->get();
 
         return view('products.detail', [
             'product' => $product,

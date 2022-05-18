@@ -28,9 +28,9 @@ class UserController extends Controller
         $credentials = $request->only('username', 'password');
         if (Auth::attempt($credentials)) {
             if(Auth::user()->is_admin){
-                return redirect()->route('admin.products', 'in process')->with('success', 'login success');
+                return redirect()->route('admin.products', 'in process')->with('loginsuccess', 'login success');
             }
-            return redirect()->route('products')->with('success', 'login success');
+            return redirect()->route('products')->with('loginsuccess', 'login success');
         }
         return back()->with('error', 'Wrong credentials');
     }

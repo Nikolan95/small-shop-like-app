@@ -15,8 +15,6 @@
                                     @foreach($categories as $category)
                                         <li class="breadcrumb-item"><a href="/products/{{$category->name}}">{{ $category->name }}</a></li>
                                     @endforeach
-{{--                                    <li class="breadcrumb-item"><a href="/products/{{$product->subcategory->category->name}}">{{ $product->subcategory->category->name }}</a></li>--}}
-{{--                                    <li class="breadcrumb-item"><a href="/products/{{$product->subcategory->category->name}}/{{$product->subcategory->name}}">{{ $product->subcategory->name }}</a></li>--}}
                                     <li class="breadcrumb-item active">{{ $product->title }}</li>
                                 </ol>
                             </div>
@@ -31,7 +29,11 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <img src="{{asset('images/products/img-7.png')}}" alt="" class=" mx-auto  d-block" height="400">
+                                        @if(isset($product->image))
+                                            <img src="{{asset($product->image)}}" alt="" class="d-block mx-auto my-4" height="300" width="400">
+                                        @else
+                                            <img src="{{asset('images/products/img-7.png')}}" alt="" class="d-block mx-auto my-4" height="400">
+                                        @endif
                                     </div><!--end col-->
                                     <div class="col-lg-6 align-self-center">
                                         <div class="single-pro-detail">
@@ -54,6 +56,43 @@
                                 </div><!--end row-->
                             </div><!--end card-body-->
                         </div><!--end card-->
+                    </div><!--end col-->
+                </div><!--end row-->
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="mt-0">Related Products</h5>
+                                <p class="text-muted mb-3 font-14">There are many variations of passages of Lorem Ipsum available,
+                                    but the majority have suffered alteration in some form, by injected humour,
+                                    or randomised words which don't look even slightly believable.
+                                    If you are going to use a passage.
+                                </p>
+                            </div><!--end card-body-->
+                        </div><!--end card-->
+                        <div class="row">
+                            @foreach($relatedProducts as $product)
+                                <div class="col-lg-4">
+                                    <div class="card e-co-product">
+                                        <a href="/product-detail/{{ $product->id }}">
+                                            @if(isset($product->image))
+                                                <img src="{{asset($product->image)}}" alt=""class="img-fluid" height="150" width="300">
+                                            @else
+                                                <img src="{{asset('images/products/img-7.png')}}" alt="" class="img-fluid" height="200">
+                                            @endif
+                                        </a>
+                                        <div class="card-body product-info">
+                                            <a href="/product-detail/{{ $product->id }}" class="product-title">{{ $product->title }}</a>
+                                            <div class="d-flex justify-content-between my-2">
+                                                <p class="product-price">${{ $product->price }}</p>
+                                            </div>
+                                            <a href="/product-detail/{{ $product->id }}" class="btn btn-gradient-primary btn-round px-3 btn-sm waves-effect waves-light" style="padding-top: 7px;"> View this product</a>
+                                        </div><!--end card-body-->
+                                    </div><!--end card-->
+                                </div><!--end col-->
+                            @endforeach
+                        </div><!--end row-->
                     </div><!--end col-->
                 </div><!--end row-->
 
@@ -105,39 +144,6 @@
                                 </div><!--end row-->
                             </div><!--end card-body-->
                         </div><!--end card-->
-                    </div><!--end col-->
-                </div><!--end row-->
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="mt-0">Related Products</h5>
-                                <p class="text-muted mb-3 font-14">There are many variations of passages of Lorem Ipsum available,
-                                    but the majority have suffered alteration in some form, by injected humour,
-                                    or randomised words which don't look even slightly believable.
-                                    If you are going to use a passage.
-                                </p>
-                            </div><!--end card-body-->
-                        </div><!--end card-->
-                        <div class="row">
-                            @foreach($relatedProducts as $product)
-                            <div class="col-lg-4">
-                                <div class="card e-co-product">
-                                    <a href="">
-                                        <img src="{{asset('images/products/img-1.png')}}" alt="" class="img-fluid">
-                                    </a>
-                                    <div class="card-body product-info">
-                                        <a href="" class="product-title">{{ $product->title }}</a>
-                                        <div class="d-flex justify-content-between my-2">
-                                            <p class="product-price">${{ $product->price }}</p>
-                                        </div>
-                                        <a href="/product-detail/{{ $product->id }}" class="btn btn-gradient-primary btn-round px-3 btn-sm waves-effect waves-light" style="padding-top: 7px;"> View this product</a>
-                                    </div><!--end card-body-->
-                                </div><!--end card-->
-                            </div><!--end col-->
-                            @endforeach
-                        </div><!--end row-->
                     </div><!--end col-->
                 </div><!--end row-->
             </div><!-- container -->
